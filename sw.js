@@ -17,14 +17,20 @@ self.addEventListener('install', event => {
   );
 });
 
-// ESTRATEGIA: "Network First"
+// ESTRATEGIA: "Network First" con Actualización de Caché y Bypass de HTTP Cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: 'no-store' })
       .then(response => {
+        // Clonamos la respuesta fresca para guardarla en el caché
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
         return response;
       })
       .catch(() => {
+        // Si no hay red (offline), servimos desde el caché
         return caches.match(event.request);
       })
   );
