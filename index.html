@@ -535,6 +535,10 @@
           </div>
         </li>
         <ul class="submenu hidden" id="submenu-cuenta">
+          <li class="submenu-item" onclick="nav('cuentas', this)">
+            <span class="material-icons-round">vpn_key</span>
+            <span class="menu-text">Mis Cuentas</span>
+          </li>
           <li class="submenu-item" onclick="nav('pedidos', this)">
             <span class="material-icons-round">receipt_long</span>
             <span class="menu-text">Mis Pedidos</span>
@@ -636,6 +640,9 @@
 
     <main class="main-content">
 
+      <!-- 📢 BANNER DE NOTIFICACIÓN GLOBAL -->
+      <div id="banner-notificacion-global" class="banner-notificacion-global" style="display:none;"></div>
+
       <div id="sec-inicio" class="hidden">
 
         <div id="version-badge" class="version-badge" onclick="abrirModalUpdates()">
@@ -674,11 +681,11 @@
             <span class="material-icons-round quick-arrow">arrow_forward</span>
           </div>
 
-          <div class="quick-card action-pedidos" onclick="nav('pedidos')">
+          <div class="quick-card action-pedidos" onclick="nav('cuentas')">
             <div class="quick-icon"><span class="material-icons-round">vpn_key</span></div>
             <div class="quick-text">
-              <h3>Mis Credenciales</h3>
-              <p>Ver mis cuentas activas</p>
+              <h3>Mis Cuentas Activas</h3>
+              <p>Ver mis credenciales y vigencias</p>
             </div>
             <span class="material-icons-round quick-arrow">arrow_forward</span>
           </div>
@@ -774,6 +781,34 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔑 SECCIÓN MIS CUENTAS (BÓVEDA DE CREDENCIALES) -->
+      <div id="sec-cuentas" class="hidden">
+        <div class="page-header-premium" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
+          <div>
+            <h1 class="page-title" style="margin:0; font-family:'Righteous', cursive; letter-spacing:1px; display:flex; align-items:center; gap:10px;">
+              <span class="material-icons-round" style="color:var(--accent-text, #ff5722); font-size:2.2rem;">vpn_key</span> MIS CUENTAS ACTIVAS
+            </h1>
+            <p class="page-subtitle" style="color:var(--text-gray); margin-top:5px; font-size:0.95rem;">Gestión centralizada de tus credenciales y servicios activos. Para ver tu historial histórico de compras, visita <a href="#" onclick="nav('pedidos'); return false;" style="color:var(--accent-text, #ff5722); font-weight:700; text-decoration:none;">Mis Pedidos</a>.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="btn-sync-cuentas" onclick="sincronizarCuentasManual(false)" title="Sincronizar cuentas recientes (últimos 2 días)" style="background:var(--bg-card); color:var(--text-main); border:1px solid var(--border-color); font-weight:700; font-size:0.82rem; padding:8px 14px; border-radius:10px; display:inline-flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.2s; box-shadow:var(--shadow-sm);">
+              <i class="material-icons-round" id="icon-sync-cuentas" style="font-size:1.15rem; color:var(--accent-text, #ff5722); transition:transform 0.5s ease;">sync</i>
+              <span id="text-sync-cuentas">Sincronizar</span>
+            </button>
+            <span id="cuentas-total-badge" style="background:var(--bg-card); color:var(--accent-text, #ff5722); border:1px solid var(--border-color); font-weight:800; font-size:0.85rem; padding:8px 16px; border-radius:20px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">0 cuentas activas</span>
+          </div>
+        </div>
+
+        <div id="cuentas-filtros-wrapper"></div>
+
+        <div id="cuentas-grid-container" style="padding-bottom:50px;">
+          <div style="text-align:center; padding:60px;">
+            <div class="spinner"></div>
+            <p style="color:var(--text-gray); margin-top:20px; letter-spacing:2px; font-size:0.85rem; font-weight:800;">CARGANDO BÓVEDA...</p>
           </div>
         </div>
       </div>
@@ -1242,7 +1277,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1790108313555"></script>
+  <script src="app.min.js?v=1790457022904"></script>
 </body>
 
 </html>
