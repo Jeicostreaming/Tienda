@@ -22,6 +22,10 @@
         if (t && u) {
           document.documentElement.classList.add('dw-authed');
           document.documentElement.classList.remove('dw-guest');
+          var lastSec = localStorage.getItem('dw_last_section') || 'inicio';
+          document.documentElement.setAttribute('data-target-sec', lastSec);
+          var s = localStorage.getItem('dw_temporada') || 'halloween';
+          document.documentElement.classList.add('season-' + s);
         } else {
           document.documentElement.classList.add('dw-guest');
           document.documentElement.classList.remove('dw-authed');
@@ -86,6 +90,52 @@
       visibility: visible !important;
       opacity: 1 !important;
       pointer-events: auto !important;
+    }
+
+    /* 3. PRE-RENDER INMEDIATO (0ms): Evitar que la página cargue vacía o salte */
+    html.dw-authed[data-target-sec="inicio"] #sec-inicio,
+    html.dw-authed:not([data-target-sec]) #sec-inicio {
+      display: flex !important;
+    }
+    html.dw-authed[data-target-sec="tienda"] #sec-tienda {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="cuentas"] #sec-cuentas {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="pedidos"] #sec-pedidos {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="billetera"] #sec-billetera {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="tokens"] #sec-tokens {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="recarga"] #sec-recarga {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="soporte"] #sec-soporte {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="mistickets"] #sec-mistickets {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="codigos"] #sec-codigos {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="ranking"] #sec-ranking {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="datos"] #sec-datos {
+      display: block !important;
+    }
+    html.dw-authed[data-target-sec="recomendaciones"] #sec-recomendaciones {
+      display: block !important;
+    }
+    /* Si la sección activa guardada NO es inicio, asegurar que sec-inicio esté oculta */
+    html.dw-authed[data-target-sec]:not([data-target-sec="inicio"]) #sec-inicio {
+      display: none !important;
     }
   </style>
 
@@ -732,7 +782,7 @@
       <!-- 📢 BANNER DE NOTIFICACIÓN GLOBAL -->
       <div id="banner-notificacion-global" class="banner-notificacion-global" style="display:none;"></div>
 
-      <div id="sec-inicio" class="bento-inicio-section season-halloween hidden">
+      <div id="sec-inicio" class="bento-inicio-section season-halloween">
 
         <div class="bento-grid">
 
@@ -758,7 +808,7 @@
 
               <div class="hero-user-cluster">
                 <div class="hero-avatar-frame">
-                  <img src="assets/Saludo.gif" alt="Saludo Avatar" class="hero-avatar-img" id="gif-saludo">
+                  <img src="assets/Saludo.gif" alt="Saludo Avatar" class="hero-avatar-img" id="gif-saludo" width="44" height="44" loading="eager" decoding="async">
                   <span class="hero-avatar-vip-crown">👑</span>
                 </div>
 
@@ -783,7 +833,7 @@
                 <span id="inicio-active-accounts-count">Mis Cuentas</span>
               </div>
 
-              <div class="hero-badge-pill">
+              <div class="hero-badge-pill hero-badge-guarantee">
                 <span class="material-icons-round">security</span>
                 <span>Garantía Blindada</span>
               </div>
@@ -831,7 +881,7 @@
           <!-- ========================================================= -->
           <!-- CARD 3: ACCESO RÁPIDO TIENDA (4 COLS)                     -->
           <!-- ========================================================= -->
-          <div class="bento-card bento-action-card" onclick="nav('tienda')">
+          <div class="bento-card bento-action-card bento-card-tienda" onclick="nav('tienda')">
             <div class="bento-card-corner-web"></div>
             <div>
               <div class="action-top-row">
@@ -854,7 +904,7 @@
           <!-- ========================================================= -->
           <!-- CARD 4: ACCESO RÁPIDO BÓVEDA CUENTAS (4 COLS)             -->
           <!-- ========================================================= -->
-          <div class="bento-card bento-action-card" onclick="nav('cuentas')">
+          <div class="bento-card bento-action-card bento-card-cuentas" onclick="nav('cuentas')">
             <div>
               <div class="action-top-row">
                 <div class="action-icon-wrapper">
@@ -876,7 +926,7 @@
           <!-- ========================================================= -->
           <!-- CARD 5: ACCESO RÁPIDO SOPORTE TÉCNICO (4 COLS)            -->
           <!-- ========================================================= -->
-          <div class="bento-card bento-action-card" onclick="nav('soporte')">
+          <div class="bento-card bento-action-card bento-card-soporte" onclick="nav('soporte')">
             <div class="bento-card-corner-web"></div>
             <div>
               <div class="action-top-row">
@@ -897,6 +947,34 @@
           </div>
 
         </div>
+
+        <!-- Sincronización ultrarrápida 0ms para evitar saltos de texto al cargar -->
+        <script>
+          (function() {
+            try {
+              var u = localStorage.getItem('dw_user');
+              var s = localStorage.getItem('dw_saldo');
+              var tk = localStorage.getItem('dw_token_saldo');
+              if (u) {
+                var n = document.getElementById('inicio-user-name-display');
+                if (n) n.textContent = u;
+                var su = document.getElementById('display-user');
+                if (su) su.textContent = u;
+              }
+              if (s !== null) {
+                var fmt = '$ ' + new Intl.NumberFormat('es-CO').format(Number(s));
+                var b = document.getElementById('inicio-user-balance-display');
+                if (b) b.textContent = fmt;
+                var sb = document.getElementById('display-balance');
+                if (sb) sb.textContent = fmt;
+              }
+              if (tk) {
+                var t = document.getElementById('inicio-user-tokens-badge');
+                if (t) t.textContent = tk + ' TK';
+              }
+            } catch (e) {}
+          })();
+        </script>
 
         <!-- CONTENEDOR OCULTO PARA PANEL-TEMAS (Garantiza compatibilidad con temas.js sin romper nada) -->
         <div id="panel-temas" style="display:none;"></div>
@@ -1476,7 +1554,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1790979085549"></script>
+  <script src="app.min.js?v=1790980873681"></script>
 </body>
 
 </html>
