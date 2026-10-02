@@ -10,6 +10,85 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
+  <!-- ========================================================
+       GUARDIA DE SESIÓN SÍNCRONA (0ms FOUC PREVENCIÓN)
+       Ejecuta inmediatamente antes de cualquier renderizado de CSS o DOM.
+       ======================================================== -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('dw_token');
+        var u = localStorage.getItem('dw_user');
+        if (t && u) {
+          document.documentElement.classList.add('dw-authed');
+          document.documentElement.classList.remove('dw-guest');
+        } else {
+          document.documentElement.classList.add('dw-guest');
+          document.documentElement.classList.remove('dw-authed');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('dw-guest');
+      }
+    })();
+  </script>
+
+  <style id="dw-auth-guard">
+    /* 1. MODO INVITADO (LOGIN ACTIVO): Ocultación total e infranqueable del panel y sidebar */
+    html:not(.dw-authed) #app-view,
+    html:not(.dw-authed) #app-view *,
+    html:not(.dw-authed) .sidebar,
+    html:not(.dw-authed) .sidebar-overlay,
+    html:not(.dw-authed) .app-top-header,
+    html:not(.dw-authed) #halloween-bg-frame,
+    html:not(.dw-authed) .version-badge,
+    html:not(.dw-authed) #particles-app,
+    html.dw-guest #app-view,
+    html.dw-guest #app-view *,
+    html.dw-guest .sidebar,
+    html.dw-guest .sidebar-overlay,
+    html.dw-guest .app-top-header,
+    html.dw-guest #halloween-bg-frame,
+    html.dw-guest .version-badge,
+    html.dw-guest #particles-app {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    html.dw-guest #login-view,
+    html:not(.dw-authed) #login-view {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    /* 2. MODO AUTENTICADO (DASHBOARD ACTIVO): Ocultar login */
+    html.dw-authed #login-view,
+    html.dw-authed #login-view *,
+    html.dw-authed #particles-login {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    html.dw-authed #app-view {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    html.dw-authed .sidebar {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+  </style>
+
   <!-- ========================================== -->
   <!-- PROTECCIÓN ANTI-INSPECCIÓN Y ANTI-ROBO     -->
   <!-- ========================================== -->
@@ -38,8 +117,9 @@
     });
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Inter:wght@300;400;600;800&display=swap"
-    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Jolly+Lodger&family=Nosifer&family=Righteous&family=Syne:wght@500;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -65,7 +145,7 @@
 
 <body>
 
-  <div id="login-view" style="display: none !important; position: relative;">
+  <div id="login-view" style="position: relative;">
 
     <div class="login-banner-bg" id="login-banner"
       style="background-image: url('uploads/categorias/banner.png'); background-size: cover; background-position: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
@@ -76,54 +156,35 @@
 
 
     <div class="login-box" id="login-box-main" style="position: relative; z-index: 5;">
-      <div style="text-align: center; margin-bottom: 25px;">
-          <h1 style="font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; color: var(--text-white, #fff); line-height: 1; letter-spacing: -1px; margin: 0; text-transform: uppercase;">
+      <div style="text-align: center; margin-bottom: 12px;">
+          <h1 style="font-family: 'Syne', sans-serif; font-size: 2.3rem; font-weight: 800; color: #ffffff; line-height: 1; letter-spacing: -1px; margin: 0; text-transform: uppercase; text-shadow: 0 0 25px rgba(255, 120, 0, 0.35);">
               Jeico<br>
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 400; letter-spacing: 8px; color: #a855f7; display: block; margin-top: 5px;">STREAMING</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 400; letter-spacing: 6px; color: #ff7800; display: block; margin-top: 4px; text-shadow: 0 0 12px #ff7800;">STREAMING</span>
           </h1>
+          <button type="button" id="btn-login-halloween-sound" class="login-halloween-audio-btn" onclick="window.toggleLoginHalloweenMusic(this)" title="Escuchar música de Halloween">
+            <span class="material-icons-round" style="font-size: 15px;">music_note</span>
+            <span>This is Halloween 🎃</span>
+          </button>
+          <audio id="audio-login-halloween" preload="auto">
+            <source src="assets/audio/this_is_halloween_coro.mp3" type="audio/mpeg">
+            <source src="assets/audio/this_is_halloween_coro.ogg" type="audio/ogg">
+          </audio>
       </div>
       <form id="login-form">
 
-        <div class="glitch-input-wrapper">
-          <div class="input-container">
-            <input type="text" id="user" class="holo-input" placeholder="" required="">
-            <label for="user" class="input-label" data-text="USUARIO">USUARIO</label>
-            <div class="input-border"></div>
-            <div class="input-scanline"></div>
-            <div class="input-glow"></div>
-            <div class="input-data-stream">
-              <div class="stream-bar" style="--i:0"></div><div class="stream-bar" style="--i:1"></div>
-              <div class="stream-bar" style="--i:2"></div><div class="stream-bar" style="--i:3"></div>
-              <div class="stream-bar" style="--i:4"></div><div class="stream-bar" style="--i:5"></div>
-              <div class="stream-bar" style="--i:6"></div><div class="stream-bar" style="--i:7"></div>
-              <div class="stream-bar" style="--i:8"></div><div class="stream-bar" style="--i:9"></div>
-            </div>
-            <div class="input-corners">
-              <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
-              <div class="corner corner-bl"></div><div class="corner corner-br"></div>
-            </div>
+        <div class="input-group">
+          <label class="input-label-tag" for="user">USUARIO</label>
+          <div class="input-wrapper">
+            <input type="text" id="user" class="holo-input" placeholder="Ingresa tu usuario" required autocomplete="username">
+            <span class="material-icons-round eye-icon" style="cursor: default;">person</span>
           </div>
         </div>
 
-        <div class="glitch-input-wrapper">
-          <div class="input-container">
-            <input type="password" id="pass" class="holo-input" placeholder="" required="">
-            <label for="pass" class="input-label" data-text="CONTRASEÑA">CONTRASEÑA</label>
+        <div class="input-group">
+          <label class="input-label-tag" for="pass">CONTRASEÑA</label>
+          <div class="input-wrapper">
+            <input type="password" id="pass" class="holo-input" placeholder="••••••••••••" required autocomplete="current-password">
             <span class="material-icons-round eye-icon" id="togglePassword">visibility_off</span>
-            <div class="input-border"></div>
-            <div class="input-scanline"></div>
-            <div class="input-glow"></div>
-            <div class="input-data-stream">
-              <div class="stream-bar" style="--i:0"></div><div class="stream-bar" style="--i:1"></div>
-              <div class="stream-bar" style="--i:2"></div><div class="stream-bar" style="--i:3"></div>
-              <div class="stream-bar" style="--i:4"></div><div class="stream-bar" style="--i:5"></div>
-              <div class="stream-bar" style="--i:6"></div><div class="stream-bar" style="--i:7"></div>
-              <div class="stream-bar" style="--i:8"></div><div class="stream-bar" style="--i:9"></div>
-            </div>
-            <div class="input-corners">
-              <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
-              <div class="corner corner-bl"></div><div class="corner corner-br"></div>
-            </div>
           </div>
         </div>
 
@@ -133,17 +194,17 @@
         </button>
       </form>
 
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 15px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 10px;">
         <p class="forgot-password-link" style="margin: 0;" onclick="mostrarRecuperacionPaso1()">¿Olvidaste tu contraseña?</p>
-        <p class="forgot-password-link" style="margin: 0; color: #a855f7; font-weight: 600;" onclick="window.open('https://wa.me/573016149753?text=Hola%20vi%20tu%20pagina%20y%20me%20interesa.', '_blank')">Regístrate</p>
+        <p class="forgot-password-link" style="margin: 0; color: #ff9500; font-weight: 600;" onclick="window.open('https://wa.me/573016149753?text=Hola%20vi%20tu%20pagina%20y%20me%20interesa.', '_blank')">Regístrate</p>
         
-        <button type="button" onclick="window.abrirModalWspBot(true)" style="margin-top: 10px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 8px 20px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s; position: relative; z-index: 10;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
-          <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> BOT WSP
+        <button type="button" onclick="window.abrirModalWspBot(true)" style="margin-top: 6px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 7px 18px; border-radius: 20px; font-weight: 800; font-size: 0.82rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s; position: relative; z-index: 10;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+          <i class="fab fa-whatsapp" style="font-size: 1.05rem;"></i> BOT WSP
         </button>
       </div>
 
-      <div style="text-align:center; margin-top:28px; font-size:0.68rem; color:var(--text-gray);">
-        &copy; 2026 Desarrollado por <span style="font-weight:700; color:var(--text-white);">Brallan Ariza</span>
+      <div style="text-align:center; margin-top:16px; font-size:0.62rem; color: #837a9b;">
+        &copy; 2026 Desarrollado por <span style="font-weight:700; color: #ffffff;">Brallan Ariza</span>
       </div>
     </div>
 
@@ -296,27 +357,28 @@
 
   </div>
 
-  <div id="app-view" style="display: none; position: relative;">
+  <div id="app-view" style="position: relative;">
     <!-- Contenedor de partículas de la app/tienda -->
     <div id="particles-app" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;"></div>
 
-    <button class="hamburger-menu" id="hamburger-btn" onclick="toggleSidebar()">
-      <span class="material-icons-round">menu</span>
-    </button>
+    <!-- 🎃 Marco de Telarañas Espectrales de Halloween (Fondo Transparente) -->
+    <div id="halloween-bg-frame" class="halloween-ambient-frame"></div>
 
-    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
 
-    <aside class="sidebar" id="sidebar">
-      <!-- Botón de Cerrar para Tablet y Celular -->
-      <button type="button" class="sidebar-mobile-close-btn" onclick="toggleSidebar(false)" aria-label="Cerrar Menú">
-        <span class="material-icons-round">close</span>
-      </button>
 
-      <div class="logo" id="sb-logo-container" style="position: relative; height: 120px; overflow: hidden; display: flex; align-items: flex-end; padding-bottom: 10px;">
+      <aside class="sidebar" id="sidebar">
+        <!-- Botón de Cerrar para Tablet y Celular -->
+        <button type="button" class="sidebar-mobile-close-btn" onclick="toggleSidebar(false)" aria-label="Cerrar Menú">
+          <span class="material-icons-round">close</span>
+        </button>
+
+        <div class="sb-mascot-box" style="text-align:center; padding:8px 0 8px; border-bottom:1px solid var(--border-subtle, rgba(255,255,255,0.08)); margin-bottom:8px; position:relative;">
+          <div class="logo" id="sb-logo-container" style="position: relative; height: 100px; overflow: visible; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; border-bottom: none;">
         <style>
           .sb-samurai {
               position: absolute;
-              bottom: 10px;
+              bottom: 4px;
               transform-origin: bottom center;
               image-rendering: pixelated;
               filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
@@ -503,20 +565,22 @@
             setIdle();
           })();
         </script>
+        </div>
       </div>
 
-      <div style="padding: 0 10px;">
-        <button class="nav-item" id="btn-toggle-desktop"
-          onclick="document.getElementById('sidebar').classList.toggle('collapsed');"
-          style="background: transparent; border: none; width: 100%; cursor: pointer;">
-          <span class="material-icons-round">menu_open</span>
-          <span class="menu-text">OCULTAR MENÚ</span>
+      <div id="btn-toggle-desktop-wrapper" style="padding: 4px 10px 8px; border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.08)); margin-bottom: 8px;">
+        <button type="button" class="nav-item btn-collapse-desktop" id="btn-toggle-desktop"
+          onclick="toggleSidebar()"
+          title="Contraer / Expandir menú"
+          style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle, rgba(255,255,255,0.08)); width: 100%; cursor: pointer; border-radius: 12px; height: 38px; display: flex; align-items: center; gap: 10px; padding: 0 12px; transition: all 0.25s ease;">
+          <span class="material-icons-round" id="collapse-icon" style="font-size: 1.25rem; color: var(--accent);">menu_open</span>
+          <span class="menu-text" style="font-size: 0.74rem; font-weight: 800; letter-spacing: 0.8px; color: var(--text-white);">CONTRAER</span>
         </button>
       </div>
 
       <ul class="nav-links">
 
-        <li class="nav-item" onclick="nav('inicio', this)">
+        <li class="nav-item active" onclick="nav('inicio', this)">
           <span class="material-icons-round">home</span>
           <span class="menu-text">INICIO</span>
         </li>
@@ -526,7 +590,7 @@
           <span class="menu-text">RECOMENDADOS</span>
         </li>
 
-        <li class="nav-item active" onclick="nav('tienda', this)">
+        <li class="nav-item" onclick="nav('tienda', this)">
           <span class="material-icons-round">storefront</span>
           <span class="menu-text">TIENDA</span>
         </li>
@@ -595,17 +659,10 @@
           <span class="menu-text">RANKING</span>
         </li>
 
-        <div class="theme-switch-wrapper">
-          <div class="theme-switch-label menu-text">
-            <span class="material-icons-round">dark_mode</span>
-            <span>OSCURO</span>
-          </div>
-          <label class="theme-switch">
-            <input type="checkbox" id="client-theme-toggle">
-            <span class="theme-slider"></span>
-          </label>
-        </div>
-
+        <li class="nav-item" onclick="openThemeModal()" style="color:var(--accent-text);">
+          <span class="material-icons-round">palette</span>
+          <span class="menu-text">PERSONALIZAR TEMA</span>
+        </li>
 
         <li class="nav-item logout-link" onclick="logout()" style="margin-top: 0;">
           <span class="material-icons-round">logout</span>
@@ -645,84 +702,211 @@
 
     <main class="main-content">
 
+      <!-- 🕹️ BARRA DE ACCIÓN SUPERIOR (HALLOWEEN + MODO CLARO/OSCURO) -->
+      <header class="app-top-header">
+        <button class="mobile-hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Abrir Menú" title="Menú">
+          <span class="material-icons-round">menu</span>
+        </button>
+
+        <div class="top-header-spacer"></div>
+
+        <div class="top-header-controls">
+          <!-- Toggle Halloween / Temporada -->
+          <button class="btn-halloween-pill" id="btn-toggle-halloween" onclick="toggleHalloweenMode()" title="Activar/Desactivar temática de Halloween">
+            <span>🎃</span> <span id="halloween-text">Halloween: ON</span>
+          </button>
+
+          <!-- Botón Silenciar / Activar Sonido de Compra -->
+          <button class="btn-mode-toggle-pill" id="btn-sound-toggle" onclick="toggleSoundMode()" title="Silenciar / Activar efectos de sonido">
+            <span class="material-icons-round" id="sound-toggle-icon">volume_up</span>
+          </button>
+
+          <!-- Botón Modo Oscuro / Claro -->
+          <button class="btn-mode-toggle-pill" id="btn-theme-toggle" onclick="toggleLightDarkMode()" title="Cambiar tema Claro / Oscuro">
+            <span class="material-icons-round" id="theme-toggle-icon">light_mode</span>
+          </button>
+        </div>
+      </header>
+
+
       <!-- 📢 BANNER DE NOTIFICACIÓN GLOBAL -->
       <div id="banner-notificacion-global" class="banner-notificacion-global" style="display:none;"></div>
 
-      <div id="sec-inicio" class="hidden">
+      <div id="sec-inicio" class="bento-inicio-section season-halloween hidden">
 
-        <div id="version-badge" class="version-badge" onclick="abrirModalUpdates()">
-          <span class="v-num" id="badge-v-num"></span>
-          <span class="v-date" id="badge-v-date"></span>
-        </div>
+        <div class="bento-grid">
 
-        <div class="inicio-dashboard-hero">
-          <div class="dashboard-user-info">
-            <div class="dashboard-greeting">Bienvenido de vuelta,</div>
-            <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-              <h1 class="dashboard-name" id="inicio-user-name-display" style="margin: 0;">Cliente</h1>
-              <button onclick="abrirModalWspBot(true)" style="background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 6px 15px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s; position: relative; z-index: 10;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
-                <i class="fab fa-whatsapp" style="font-size: 1.1rem;"></i> ASISTENTE VIP
+          <!-- ========================================================= -->
+          <!-- CARD 1: HERO GREETING & VIP IDENTITY (7 COLS)             -->
+          <!-- ========================================================= -->
+          <div class="bento-card bento-hero">
+            <!-- 🌟 DECORACIÓN ESTACIONAL SUPERIOR IZQUIERDA (HALLOWEEN / NAVIDAD / PRIMAVERA) -->
+            <div class="bento-season-decor-tl"></div>
+
+            <div>
+              <div class="hero-top-row">
+                <div class="hero-time-badge">
+                  <span class="hero-time-dot"></span>
+                  <span id="dynamic-greeting-label">BUENAS NOCHES</span>
+                </div>
+
+                <div id="version-badge" class="hero-version-link" onclick="abrirModalUpdates()" title="Ver historial de actualizaciones">
+                  <span class="material-icons-round" style="font-size:14px; color:var(--accent);">verified</span>
+                  <span id="badge-v-num">V.2.6.0</span> • <span id="badge-v-date">ACTUALIZADO</span>
+                </div>
+              </div>
+
+              <div class="hero-user-cluster">
+                <div class="hero-avatar-frame">
+                  <img src="assets/Saludo.gif" alt="Saludo Avatar" class="hero-avatar-img" id="gif-saludo">
+                  <span class="hero-avatar-vip-crown">👑</span>
+                </div>
+
+                <div class="hero-text-group">
+                  <div class="hero-greeting-sub">Bienvenido de vuelta,</div>
+                  <h1 class="hero-user-title">
+                    <span id="inicio-user-name-display">Cliente</span>
+                    <span class="animated-look">😀</span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-actions-row">
+              <button class="btn-wsp-vip" onclick="abrirModalWspBot(true)">
+                <i class="fab fa-whatsapp" style="font-size:1.1rem;"></i>
+                <span>ASISTENTE VIP</span>
+              </button>
+
+              <div class="hero-badge-pill" onclick="nav('cuentas')" style="cursor:pointer;" title="Ver mis cuentas">
+                <span class="material-icons-round">vpn_key</span>
+                <span id="inicio-active-accounts-count">Mis Cuentas</span>
+              </div>
+
+              <div class="hero-badge-pill">
+                <span class="material-icons-round">security</span>
+                <span>Garantía Blindada</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- CARD 2: WALLET & BALANCE HUB (5 COLS)                     -->
+          <!-- ========================================================= -->
+          <div class="bento-card bento-balance">
+            <!-- 🌟 DECORACIÓN ESTACIONAL SUPERIOR DERECHA (HALLOWEEN / NAVIDAD / PRIMAVERA) -->
+            <div class="bento-season-decor-tr"></div>
+
+            <div>
+              <div class="balance-header-row">
+                <span class="balance-tag">
+                  <span class="material-icons-round" style="font-size:15px;">account_balance_wallet</span>
+                  SALDO DISPONIBLE
+                </span>
+
+                <button class="balance-eye-btn" onclick="toggleBalancePrivacyInicio()" title="Ocultar/Mostrar saldo">
+                  <span class="material-icons-round" id="eye-icon-inicio" style="font-size:17px;">visibility</span>
+                </button>
+              </div>
+
+              <h2 class="balance-main-amount" id="inicio-user-balance-display">$ 0</h2>
+
+              <div class="balance-token-strip" onclick="nav('tokens')" style="cursor:pointer;" title="Ver mis tokens">
+                <div class="token-left">
+                  <span style="font-size:1.15rem;">🪙</span>
+                  <span>Tokens Fidelidad:</span>
+                </div>
+                <span class="token-badge" id="inicio-user-tokens-badge">0 TK</span>
+              </div>
+            </div>
+
+            <div class="balance-footer-actions">
+              <button class="btn-recarga-bento" onclick="nav('recarga')">
+                <span class="material-icons-round" style="font-size:1.2rem;">add_circle</span>
+                <span>RECARGAR SALDO</span>
               </button>
             </div>
           </div>
-          <div class="dashboard-balance-card">
-            <div class="balance-text-group">
-              <span class="balance-label">SALDO DISPONIBLE</span>
-              <h2 class="balance-amount" id="inicio-user-balance-display">$ 0</h2>
+
+          <!-- ========================================================= -->
+          <!-- CARD 3: ACCESO RÁPIDO TIENDA (4 COLS)                     -->
+          <!-- ========================================================= -->
+          <div class="bento-card bento-action-card" onclick="nav('tienda')">
+            <div class="bento-card-corner-web"></div>
+            <div>
+              <div class="action-top-row">
+                <div class="action-icon-wrapper">
+                  <span class="material-icons-round">storefront</span>
+                </div>
+                <span class="action-badge hot">🔥 40+ SERVICIOS</span>
+              </div>
+
+              <h3 class="action-title">Ir a la Tienda</h3>
+              <p class="action-desc">Adquiere combos familiares, perfiles 4K UHD y renovaciones al instante.</p>
             </div>
-            <button class="btn-recarga-quick" onclick="nav('recarga')">
-              <span class="material-icons-round">add_circle</span> RECARGAR
-            </button>
+
+            <div class="action-bottom-link">
+              <span>Explorar catálogo completo</span>
+              <span class="material-icons-round action-arrow-icon">arrow_forward</span>
+            </div>
           </div>
+
+          <!-- ========================================================= -->
+          <!-- CARD 4: ACCESO RÁPIDO BÓVEDA CUENTAS (4 COLS)             -->
+          <!-- ========================================================= -->
+          <div class="bento-card bento-action-card" onclick="nav('cuentas')">
+            <div>
+              <div class="action-top-row">
+                <div class="action-icon-wrapper">
+                  <span class="material-icons-round">vpn_key</span>
+                </div>
+                <span class="action-badge highlight">🟢 BÓVEDA SEGURA</span>
+              </div>
+
+              <h3 class="action-title">Mis Cuentas Activas</h3>
+              <p class="action-desc">Visualiza tus correos, pines, perfiles y vigencias sin salir de tu panel.</p>
+            </div>
+
+            <div class="action-bottom-link">
+              <span>Abrir bóveda protegida</span>
+              <span class="material-icons-round action-arrow-icon">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- CARD 5: ACCESO RÁPIDO SOPORTE TÉCNICO (4 COLS)            -->
+          <!-- ========================================================= -->
+          <div class="bento-card bento-action-card" onclick="nav('soporte')">
+            <div class="bento-card-corner-web"></div>
+            <div>
+              <div class="action-top-row">
+                <div class="action-icon-wrapper">
+                  <span class="material-icons-round">support_agent</span>
+                </div>
+                <span class="action-badge">9:00 AM - 11:00 PM</span>
+              </div>
+
+              <h3 class="action-title">Centro de Ayuda</h3>
+              <p class="action-desc">Reporta caídas de perfil o dudas de facturación con reposición garantizada.</p>
+            </div>
+
+            <div class="action-bottom-link">
+              <span>Contactar con soporte</span>
+              <span class="material-icons-round action-arrow-icon">arrow_forward</span>
+            </div>
+          </div>
+
         </div>
 
-        <div class="inicio-quick-actions">
-          <div class="quick-card action-tienda" onclick="nav('tienda')">
-            <div class="quick-icon"><span class="material-icons-round">storefront</span></div>
-            <div class="quick-text">
-              <h3>Ir a la Tienda</h3>
-              <p>Adquirir nuevas cuentas</p>
-            </div>
-            <span class="material-icons-round quick-arrow">arrow_forward</span>
-          </div>
+        <!-- CONTENEDOR OCULTO PARA PANEL-TEMAS (Garantiza compatibilidad con temas.js sin romper nada) -->
+        <div id="panel-temas" style="display:none;"></div>
 
-          <div class="quick-card action-pedidos" onclick="nav('cuentas')">
-            <div class="quick-icon"><span class="material-icons-round">vpn_key</span></div>
-            <div class="quick-text">
-              <h3>Mis Cuentas Activas</h3>
-              <p>Ver mis credenciales y vigencias</p>
-            </div>
-            <span class="material-icons-round quick-arrow">arrow_forward</span>
-          </div>
-
-          <div class="quick-card action-soporte" onclick="nav('soporte')">
-            <div class="quick-icon"><span class="material-icons-round">support_agent</span></div>
-            <div class="quick-text">
-              <h3>Centro de Ayuda</h3>
-              <p>Reportar fallas o dudas</p>
-            </div>
-            <span class="material-icons-round quick-arrow">arrow_forward</span>
-          </div>
-        </div>
-
-        <div class="temas-section">
-          <h3 class="temas-section-title">
-            <span class="material-icons-round">palette</span>
-            Aspecto Visual
-          </h3>
-          <div id="panel-temas"></div>
-        </div>
-
+        <!-- FOOTER INTEGRADO Y ANCLADO -->
         <div class="inicio-footer-premium">
           <div class="footer-content">
-            <span class="footer-copy">&copy; 2026 Desarrollado por <strong class="footer-brand-name">BRALLAN
-                ARIZA</strong></span>
+            <span class="footer-copy">&copy; 2026 Desarrollado por <strong class="footer-brand-name">BRALLAN ARIZA</strong></span>
             <span class="footer-dot"></span>
             <span class="footer-rights">Todos los derechos reservados</span>
-          </div>
-          <div class="footer-tech-badge">
-            <span class="material-icons-round">verified_user</span>
-            Plataforma Protegida
           </div>
         </div>
 
@@ -738,7 +922,7 @@
         </div>
       </div>
 
-      <div id="sec-tienda">
+      <div id="sec-tienda" class="hidden">
         <div class="section-header-premium">
           <h1 class="page-title">CATÁLOGO PREMIUM</h1>
           <p class="section-description">Selecciona el servicio que deseas activar en tu cuenta.</p>
@@ -1000,6 +1184,48 @@
       </div>
     </div>
 
+    <!-- 🎨 MODAL PERSONALIZADOR DE TEMAS -->
+    <div class="theme-modal-overlay" id="theme-modal-overlay" onclick="if(event.target===this) closeThemeModal()">
+      <div class="theme-modal-window">
+        <div class="theme-modal-header">
+          <h2>
+            <span class="material-icons-round" style="color:var(--accent);">palette</span>
+            Personalizar Aspecto de la Bóveda
+          </h2>
+          <button class="theme-modal-close" onclick="closeThemeModal()">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+
+        <div class="palette-modal-grid">
+          <div class="palette-modal-item active" id="modal-palette-fuego" onclick="window.aplicarTema('fuego'); closeThemeModal();">
+            <div class="palette-bar" style="background:linear-gradient(135deg,#dc2626 0%,#ea580c 50%,#fbbf24 100%);"></div>
+            <span style="font-weight:700; font-size:0.85rem; color:var(--text-white);">🔥 Fuego</span>
+          </div>
+          <div class="palette-modal-item" id="modal-palette-tec" onclick="window.aplicarTema('tec'); closeThemeModal();">
+            <div class="palette-bar" style="background:linear-gradient(135deg,#7c3aed 0%,#4f46e5 50%,#a78bfa 100%);"></div>
+            <span style="font-weight:700; font-size:0.85rem; color:var(--text-white);">⚡ Tecnología</span>
+          </div>
+          <div class="palette-modal-item" id="modal-palette-oceano" onclick="window.aplicarTema('oceano'); closeThemeModal();">
+            <div class="palette-bar" style="background:linear-gradient(135deg,#0284c7 0%,#0891b2 50%,#7dd3fc 100%);"></div>
+            <span style="font-weight:700; font-size:0.85rem; color:var(--text-white);">🌊 Océano</span>
+          </div>
+          <div class="palette-modal-item" id="modal-palette-esmeralda" onclick="window.aplicarTema('esmeralda'); closeThemeModal();">
+            <div class="palette-bar" style="background:linear-gradient(135deg,#059669 0%,#0d9488 50%,#34d399 100%);"></div>
+            <span style="font-weight:700; font-size:0.85rem; color:var(--text-white);">💎 Esmeralda</span>
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.18); border:1px dashed var(--border-color); border-radius:14px; padding:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+          <span style="font-size:0.8rem; color:var(--text-gray);">¿Deseas personalizar con tus propios colores HEX?</span>
+          <button class="demo-pill-btn active" style="background:var(--accent-gradient); color:#fff; border:none; padding:7px 16px; border-radius:8px; font-weight:700; cursor:pointer;" onclick="closeThemeModal(); if(window.renderizarSelectorTemas) { const p = document.getElementById('panel-temas'); if(p) { p.style.display = p.style.display==='none'?'block':'none'; window.renderizarSelectorTemas(); if(p.style.display==='block') p.scrollIntoView({behavior:'smooth'}); } }">
+            <span class="material-icons-round" style="font-size:15px; vertical-align:middle;">tune</span>
+            <span>Ajustar Colores</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1181,7 +1407,7 @@
         particlesJS("particles-login", {
             "particles": {
                 "number": { "value": 40, "density": { "enable": true, "value_area": 1200 } },
-                "color": { "value": ["#7c3aed", "#6d28d9", "#2563eb", "#1e40af"] },
+                "color": { "value": ["#ff7800", "#ff9500", "#9333ea", "#ea580c"] },
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.6,
@@ -1196,8 +1422,8 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#4f46e5",
-                    "opacity": 0.4,
+                    "color": "#ff7800",
+                    "opacity": 0.35,
                     "width": 1
                 },
                 "move": {
@@ -1246,7 +1472,7 @@
                     "anim": { "enable": true, "speed": 2, "size_min": 3, "sync": false }
                 },
                 "line_linked": {
-                    "enable": true,
+                    "enable": false,
                     "distance": 150,
                     "color": "#4f46e5",
                     "opacity": 0.5,
@@ -1282,7 +1508,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1790566877000"></script>
+  <script src="app.min.js?v=1790977254011"></script>
 </body>
 
 </html>
