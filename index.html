@@ -1362,38 +1362,6 @@
           if (overlay) overlay.classList.add('hidden');
           if (modal) modal.classList.remove('active');
       };
-
-      // Automáticamente abrir el modal una vez por dispositivo si ya pasó el login
-      setTimeout(() => {
-        const hasSeenBotModal = localStorage.getItem('wsp_bot_modal_seen');
-        const loginView = document.getElementById('login-view');
-        
-        // Solo mostrar si el login ya no está activo
-        if (!hasSeenBotModal && loginView && (loginView.style.display === 'none' || loginView.classList.contains('dw-oculto')) && !window.hasConsentidoWsp()) {
-            window.abrirModalWspBot();
-            localStorage.setItem('wsp_bot_modal_seen', 'true');
-        }
-      }, 3000);
-      
-      // Añadir observer para detectar cuando se oculte el login-view por primera vez
-      const loginObserver = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-              if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
-                  const loginView = document.getElementById('login-view');
-                  if (loginView && (loginView.style.display === 'none' || loginView.classList.contains('dw-oculto')) && !localStorage.getItem('wsp_bot_modal_seen') && !window.hasConsentidoWsp()) {
-                      setTimeout(() => {
-                          window.abrirModalWspBot();
-                          localStorage.setItem('wsp_bot_modal_seen', 'true');
-                      }, 1000);
-                  }
-              }
-          });
-      });
-      
-      const loginViewNode = document.getElementById('login-view');
-      if (loginViewNode) {
-          loginObserver.observe(loginViewNode, { attributes: true });
-      }
     });
   </script>
 
@@ -1508,7 +1476,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1790978685176"></script>
+  <script src="app.min.js?v=1790979085549"></script>
 </body>
 
 </html>
