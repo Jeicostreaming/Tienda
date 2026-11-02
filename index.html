@@ -24,7 +24,7 @@
           document.documentElement.classList.remove('dw-guest');
           var lastSec = localStorage.getItem('dw_last_section') || 'inicio';
           document.documentElement.setAttribute('data-target-sec', lastSec);
-          var s = localStorage.getItem('dw_temporada') || 'halloween';
+          var s = localStorage.getItem('dw_temporada') || 'navidad';
           document.documentElement.classList.add('season-' + s);
         } else {
           document.documentElement.classList.add('dw-guest');
@@ -193,7 +193,27 @@
   </script>
 </head>
 
-<body>
+<body class="season-navidad dark-mode">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('dw_temporada_activa') || 'navidad';
+        if (t === 'halloween') t = 'navidad';
+        if (t !== 'default') {
+          document.documentElement.classList.add('season-' + t);
+          document.body.classList.add('season-' + t);
+        }
+        var theme = localStorage.getItem('dw_theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark-mode');
+          document.body.classList.remove('dark-mode');
+        } else {
+          document.documentElement.classList.add('dark-mode');
+          document.body.classList.add('dark-mode');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <div id="login-view" style="position: relative;">
 
@@ -207,18 +227,14 @@
 
     <div class="login-box" id="login-box-main" style="position: relative; z-index: 5;">
       <div style="text-align: center; margin-bottom: 12px;">
-          <h1 style="font-family: 'Syne', sans-serif; font-size: 2.3rem; font-weight: 800; color: #ffffff; line-height: 1; letter-spacing: -1px; margin: 0; text-transform: uppercase; text-shadow: 0 0 25px rgba(255, 120, 0, 0.35);">
+          <h1 style="font-family: 'Syne', sans-serif; font-size: 2.3rem; font-weight: 800; color: #ffffff; line-height: 1; letter-spacing: -1px; margin: 0; text-transform: uppercase; text-shadow: 0 0 25px rgba(239, 68, 68, 0.35);">
               Jeico<br>
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 400; letter-spacing: 6px; color: #ff7800; display: block; margin-top: 4px; text-shadow: 0 0 12px #ff7800;">STREAMING</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 400; letter-spacing: 6px; color: #fbbf24; display: block; margin-top: 4px; text-shadow: 0 0 12px #fbbf24;">STREAMING</span>
           </h1>
-          <button type="button" id="btn-login-halloween-sound" class="login-halloween-audio-btn" onclick="window.toggleLoginHalloweenMusic(this)" title="Escuchar música de Halloween">
-            <span class="material-icons-round" style="font-size: 15px;">music_note</span>
-            <span>This is Halloween 🎃</span>
+          <button type="button" id="btn-login-halloween-sound" class="login-halloween-audio-btn" onclick="window.toggleLoginHalloweenMusic(this)" title="Escuchar melodía navideña">
+            <span class="material-icons-round" style="font-size: 15px;">notifications_active</span>
+            <span>Jingle Bells 🔔</span>
           </button>
-          <audio id="audio-login-halloween" preload="auto">
-            <source src="assets/audio/this_is_halloween_coro.mp3" type="audio/mpeg">
-            <source src="assets/audio/this_is_halloween_coro.ogg" type="audio/ogg">
-          </audio>
       </div>
       <form id="login-form">
 
@@ -762,8 +778,8 @@
 
         <div class="top-header-controls">
           <!-- Toggle Halloween / Temporada -->
-          <button class="btn-halloween-pill" id="btn-toggle-halloween" onclick="toggleHalloweenMode()" title="Activar/Desactivar temática de Halloween">
-            <span>🎃</span> <span id="halloween-text">Halloween: ON</span>
+          <button class="btn-halloween-pill active" id="btn-toggle-halloween" onclick="toggleHalloweenMode()" title="Activar/Desactivar temática Navideña">
+            <span>🎄</span> <span id="halloween-text">Navidad: ON</span>
           </button>
 
           <!-- Botón Silenciar / Activar Sonido de Compra -->
@@ -782,7 +798,7 @@
       <!-- 📢 BANNER DE NOTIFICACIÓN GLOBAL -->
       <div id="banner-notificacion-global" class="banner-notificacion-global" style="display:none;"></div>
 
-      <div id="sec-inicio" class="bento-inicio-section season-halloween">
+      <div id="sec-inicio" class="bento-inicio-section season-navidad">
 
         <div class="bento-grid">
 
@@ -802,7 +818,7 @@
 
                 <div id="version-badge" class="hero-version-link" onclick="abrirModalUpdates()" title="Ver historial de actualizaciones">
                   <span class="material-icons-round" style="font-size:14px; color:var(--accent);">verified</span>
-                  <span id="badge-v-num">V.2.6.0</span> • <span id="badge-v-date">ACTUALIZADO</span>
+                  <span id="badge-v-num">V.2.8.4</span> • <span id="badge-v-date">ACTUALIZADO</span>
                 </div>
               </div>
 
@@ -905,6 +921,7 @@
           <!-- CARD 4: ACCESO RÁPIDO BÓVEDA CUENTAS (4 COLS)             -->
           <!-- ========================================================= -->
           <div class="bento-card bento-action-card bento-card-cuentas" onclick="nav('cuentas')">
+            <div class="bento-card-corner-web"></div>
             <div>
               <div class="action-top-row">
                 <div class="action-icon-wrapper">
@@ -1204,7 +1221,7 @@
     </div>
 
     <div class="overlay hidden" id="update-overlay" onclick="cerrarModalUpdates()"></div>
-    <div class="update-modal" id="update-modal">
+    <div class="update-modal hidden" id="update-modal" style="display: none;">
       <div class="update-header">
         <div class="update-header-title">
           <span class="material-icons-round">system_update_alt</span>
@@ -1219,8 +1236,8 @@
     </div>
 
     <!-- WhatsApp Bot Modal -->
-    <div class="overlay hidden" id="wsp-bot-overlay" onclick="cerrarModalWspBot()" style="backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.7); z-index: 10999;"></div>
-    <div class="update-modal" id="wsp-bot-modal" style="background: rgba(18, 18, 20, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(37, 211, 102, 0.3); max-width: 650px; width: 95%; text-align: center; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(37, 211, 102, 0.15); overflow: hidden; z-index: 11000;">
+    <div class="overlay hidden" id="wsp-bot-overlay" onclick="cerrarModalWspBot()" style="display: none; backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.7); z-index: 10999;"></div>
+    <div class="update-modal hidden" id="wsp-bot-modal" style="display: none; background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(37, 211, 102, 0.3); max-width: 650px; width: 95%; text-align: center; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(37, 211, 102, 0.15); overflow: hidden; z-index: 11000;">
       <!-- Efecto de brillo de fondo -->
       <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: #25D366; filter: blur(100px); opacity: 0.2; pointer-events: none;"></div>
       
@@ -1336,66 +1353,63 @@
       };
 
       try {
-        // 1. Verificamos si hay datos guardados en LocalStorage
+        let brandingCargado = false;
         const cacheGuardado = localStorage.getItem(CACHE_KEY);
         if (cacheGuardado) {
           const datosCache = JSON.parse(cacheGuardado);
           const tiempoActual = new Date().getTime();
 
-          // Si NO ha pasado 1 hora, usamos la memoria y detenemos la ejecución aquí
           if (tiempoActual - datosCache.timestamp < TIEMPO_EXPIRACION) {
             aplicarBrandingAlHTML(datosCache.logo, datosCache.banner);
-            return;
+            brandingCargado = true;
           }
         }
 
-        // 2. Si no hay caché o ya pasó 1 hora, hacemos el llamado al servidor
-        const response = await fetch(`${API_BASE_URL_CLIENTE}/dw_api.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: 'accion=getConfiguracion'
-        });
-        const data = await response.json();
+        if (!brandingCargado) {
+          const response = await fetch(`${API_BASE_URL_CLIENTE}/dw_api.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'accion=getConfiguracion'
+          });
+          const data = await response.json();
 
-        if (data.success && data.datos) {
-          let urlLogo = data.datos.logo || '';
-          let urlBanner = data.datos.banner || '';
+          if (data.success && data.datos) {
+            let urlLogo = data.datos.logo || '';
+            let urlBanner = data.datos.banner || '';
 
-          // --- PROCESAR LOGO ---
-          if (urlLogo) {
-            if (urlLogo.includes("uc?export=view&id=")) {
-              urlLogo = urlLogo.replace("uc?export=view&id=", "thumbnail?id=") + "&sz=w400";
-            } else if (!urlLogo.startsWith("http") && !urlLogo.startsWith("data:")) {
-              urlLogo = API_BASE_URL_CLIENTE + "/uploads/categorias/" + urlLogo;
+            if (urlLogo) {
+              if (urlLogo.includes("uc?export=view&id=")) {
+                urlLogo = urlLogo.replace("uc?export=view&id=", "thumbnail?id=") + "&sz=w400";
+              } else if (!urlLogo.startsWith("http") && !urlLogo.startsWith("data:")) {
+                urlLogo = API_BASE_URL_CLIENTE + "/uploads/categorias/" + urlLogo;
+              }
             }
-          }
 
-          // --- PROCESAR BANNER (Fondo del Login) ---
-          if (urlBanner) {
-            if (urlBanner.includes("uc?export=view&id=")) {
-              urlBanner = urlBanner.replace("uc?export=view&id=", "thumbnail?id=") + "&sz=w1200";
-            } else if (!urlBanner.startsWith("http") && !urlBanner.startsWith("data:")) {
-              urlBanner = API_BASE_URL_CLIENTE + "/uploads/categorias/" + urlBanner;
+            if (urlBanner) {
+              if (urlBanner.includes("uc?export=view&id=")) {
+                urlBanner = urlBanner.replace("uc?export=view&id=", "thumbnail?id=") + "&sz=w1200";
+              } else if (!urlBanner.startsWith("http") && !urlBanner.startsWith("data:")) {
+                urlBanner = API_BASE_URL_CLIENTE + "/uploads/categorias/" + urlBanner;
+              }
             }
+
+            aplicarBrandingAlHTML(urlLogo, urlBanner);
+
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              logo: urlLogo,
+              banner: urlBanner,
+              timestamp: new Date().getTime()
+            }));
           }
-
-          // 3. Lo mostramos en la pantalla
-          aplicarBrandingAlHTML(urlLogo, urlBanner);
-
-          // 4. Guardamos los enlaces limpios en LocalStorage con la hora actual
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            logo: urlLogo,
-            banner: urlBanner,
-            timestamp: new Date().getTime()
-          }));
         }
       } catch (e) {
         console.warn("No se pudo cargar el branding dinámico, usando plan de respaldo:", e);
-        // Plan de respaldo: si se cae el internet, intenta mostrar la memoria vieja para no dejar la página en blanco
         const cacheGuardado = localStorage.getItem(CACHE_KEY);
         if (cacheGuardado) {
-          const datosCache = JSON.parse(cacheGuardado);
-          aplicarBrandingAlHTML(datosCache.logo, datosCache.banner);
+          try {
+            const datosCache = JSON.parse(cacheGuardado);
+            aplicarBrandingAlHTML(datosCache.logo, datosCache.banner);
+          } catch(err) {}
         }
       }
 
@@ -1421,24 +1435,31 @@
       };
 
       window.abrirModalWspBot = function(desdeBoton = false) {
-          // Si el usuario da clic en el botón del inicio y YA consintió, vamos directo al WhatsApp
-          if (desdeBoton && window.hasConsentidoWsp()) {
-              window.open('https://wa.me/573009755557?text=Hola,%20quiero%20informaci%C3%B3n', '_blank');
-              return;
-          }
-
-          // De lo contrario, abrimos el modal normalmente
           const overlay = document.getElementById('wsp-bot-overlay');
           const modal = document.getElementById('wsp-bot-modal');
-          if (overlay) overlay.classList.remove('hidden');
-          if (modal) modal.classList.add('active');
+          if (overlay) {
+              overlay.classList.remove('hidden');
+              overlay.style.display = 'block';
+          }
+          if (modal) {
+              modal.classList.remove('hidden');
+              modal.classList.add('active');
+              modal.style.display = 'flex';
+          }
       };
 
       window.cerrarModalWspBot = function() {
           const overlay = document.getElementById('wsp-bot-overlay');
           const modal = document.getElementById('wsp-bot-modal');
-          if (overlay) overlay.classList.add('hidden');
-          if (modal) modal.classList.remove('active');
+          if (overlay) {
+              overlay.classList.add('hidden');
+              overlay.style.display = 'none';
+          }
+          if (modal) {
+              modal.classList.remove('active');
+              modal.classList.add('hidden');
+              modal.style.display = 'none';
+          }
       };
     });
   </script>
@@ -1453,7 +1474,7 @@
         particlesJS("particles-login", {
             "particles": {
                 "number": { "value": 40, "density": { "enable": true, "value_area": 1200 } },
-                "color": { "value": ["#ff7800", "#ff9500", "#9333ea", "#ea580c"] },
+                "color": { "value": ["#38bdf8", "#ffffff", "#ef4444", "#00f2fe"] },
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.6,
@@ -1468,7 +1489,7 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#ff7800",
+                    "color": "#38bdf8",
                     "opacity": 0.35,
                     "width": 1
                 },
@@ -1554,7 +1575,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1793138061752"></script>
+  <script src="app.min.js?v=1793656698071"></script>
 </body>
 
 </html>
