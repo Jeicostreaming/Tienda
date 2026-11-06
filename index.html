@@ -777,6 +777,12 @@
         <div class="top-header-spacer"></div>
 
         <div class="top-header-controls">
+          <!-- Switch de Moneda COP / USD -->
+          <div class="currency-toggle-wrapper" style="display:flex; background:rgba(15,18,29,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:3px; gap:2px;">
+            <button type="button" class="curr-switch-btn active" data-curr="COP" onclick="cambiarMonedaGlobal('COP')" style="background:transparent; border:none; color:#cbd5e1; font-size:0.75rem; font-weight:800; padding:5px 10px; border-radius:16px; cursor:pointer; transition:all 0.2s;">🇨🇴 COP</button>
+            <button type="button" class="curr-switch-btn" data-curr="USD" onclick="cambiarMonedaGlobal('USD')" style="background:transparent; border:none; color:#cbd5e1; font-size:0.75rem; font-weight:800; padding:5px 10px; border-radius:16px; cursor:pointer; transition:all 0.2s;">🇺🇸 USD</button>
+          </div>
+
           <!-- Toggle Halloween / Temporada -->
           <button class="btn-halloween-pill active" id="btn-toggle-halloween" onclick="toggleHalloweenMode()" title="Activar/Desactivar temática Navideña">
             <span>🎄</span> <span id="halloween-text">Navidad: ON</span>
@@ -1467,6 +1473,45 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+  <!-- 💱 SISTEMA BIMONEDA (COP / USD): display de saldo según la moneda activa -->
+  <style>
+    .currency-toggle-wrapper .curr-switch-btn.active { background: var(--accent) !important; color: #fff !important; box-shadow: 0 2px 8px var(--accent-glow); }
+    .currency-toggle-wrapper .curr-switch-btn { min-height: 32px; }
+  </style>
+  <script>
+    window.actualizarDisplaySaldoGlobal = function () {
+      var texto = window.monedaActiva === 'USD'
+        ? '$ ' + (Number(window.userBalanceUSD) || 0).toFixed(2) + ' USD'
+        : '$ ' + new Intl.NumberFormat('es-CO').format(window.userBalance || 0);
+      var dBalance = document.getElementById('display-balance');
+      var iBalance = document.getElementById('inicio-user-balance-display');
+      var wBalance = document.getElementById('wallet-balance-big');
+      if (dBalance) dBalance.innerText = texto;
+      if (wBalance) wBalance.innerText = texto;
+      if (iBalance) {
+        if (window.isBalanceHiddenInicio) {
+          iBalance.setAttribute('data-real-balance', texto);
+          iBalance.innerText = '••••••••';
+        } else {
+          iBalance.innerText = texto;
+        }
+      }
+      if (typeof window.renderizarTarjetasSaldoBilletera === 'function') window.renderizarTarjetasSaldoBilletera();
+    };
+    // Cada refresco de saldo existente (llave.js) termina respetando la moneda activa
+    (function () {
+      var original = window.updateBalanceUI;
+      window.updateBalanceUI = function () {
+        if (typeof original === 'function') original.apply(this, arguments);
+        window.actualizarDisplaySaldoGlobal();
+      };
+      document.querySelectorAll('.curr-switch-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.curr === window.monedaActiva);
+      });
+      window.actualizarDisplaySaldoGlobal();
+    })();
+  </script>
+
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
       // Inicializar partículas en el login si existe el contenedor
@@ -1575,7 +1620,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1793656698071"></script>
+  <script src="app.min.js?v=1793939164492"></script>
 </body>
 
 </html>
