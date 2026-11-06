@@ -1480,9 +1480,21 @@
   </style>
   <script>
     window.actualizarDisplaySaldoGlobal = function () {
+      var sCOP = (window.userBalance !== undefined && window.userBalance !== null && !isNaN(window.userBalance) && Number(window.userBalance) > 0)
+        ? Number(window.userBalance)
+        : (Number(localStorage.getItem('dw_saldo')) || (typeof userBalance !== 'undefined' ? Number(userBalance) : 0));
+
+      var sUSD = (window.userBalanceUSD !== undefined && window.userBalanceUSD !== null && !isNaN(window.userBalanceUSD) && Number(window.userBalanceUSD) > 0)
+        ? Number(window.userBalanceUSD)
+        : (Number(localStorage.getItem('dw_saldo_usd')) || 0);
+
+      window.userBalance = sCOP;
+      window.userBalanceUSD = sUSD;
+
       var texto = window.monedaActiva === 'USD'
-        ? '$ ' + (Number(window.userBalanceUSD) || 0).toFixed(2) + ' USD'
-        : '$ ' + new Intl.NumberFormat('es-CO').format(window.userBalance || 0);
+        ? '$ ' + (Number(sUSD) || 0).toFixed(2) + ' USD'
+        : '$ ' + new Intl.NumberFormat('es-CO').format(sCOP || 0);
+
       var dBalance = document.getElementById('display-balance');
       var iBalance = document.getElementById('inicio-user-balance-display');
       var wBalance = document.getElementById('wallet-balance-big');
@@ -1620,7 +1632,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1793939164492"></script>
+  <script src="app.min.js?v=1793940275154"></script>
 </body>
 
 </html>
