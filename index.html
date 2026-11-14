@@ -264,9 +264,11 @@
         <p class="forgot-password-link" style="margin: 0;" onclick="mostrarRecuperacionPaso1()">¿Olvidaste tu contraseña?</p>
         <p class="forgot-password-link" style="margin: 0; color: #ff9500; font-weight: 600;" onclick="window.open('https://wa.me/573016149753?text=Hola%20vi%20tu%20pagina%20y%20me%20interesa.', '_blank')">Regístrate</p>
         
+        <!-- Desactivado temporalmente: Botón BOT WSP en Login
         <button type="button" onclick="window.abrirModalWspBot(true)" style="margin-top: 6px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; padding: 7px 18px; border-radius: 20px; font-weight: 800; font-size: 0.82rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s; position: relative; z-index: 10;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
           <i class="fab fa-whatsapp" style="font-size: 1.05rem;"></i> BOT WSP
         </button>
+        -->
       </div>
 
       <div style="text-align:center; margin-top:16px; font-size:0.62rem; color: #837a9b;">
@@ -843,10 +845,12 @@
             </div>
 
             <div class="hero-actions-row">
+              <!-- Desactivado temporalmente: Botón ASISTENTE VIP (Bot WhatsApp)
               <button class="btn-wsp-vip" onclick="abrirModalWspBot(true)">
                 <i class="fab fa-whatsapp" style="font-size:1.1rem;"></i>
                 <span>ASISTENTE VIP</span>
               </button>
+              -->
 
               <div class="hero-badge-pill" onclick="nav('cuentas')" style="cursor:pointer;" title="Ver mis cuentas">
                 <span class="material-icons-round">vpn_key</span>
@@ -1518,10 +1522,13 @@
       </div>
     </div>
 
-    <!-- WhatsApp Bot Modal -->
+    <!-- WhatsApp Bot Modal (Desactivado temporalmente) -->
+    <!--
     <div class="overlay hidden" id="wsp-bot-overlay" onclick="cerrarModalWspBot()" style="display: none; backdrop-filter: blur(8px); background: rgba(0, 0, 0, 0.7); z-index: 10999;"></div>
     <div class="update-modal hidden" id="wsp-bot-modal" style="display: none; background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(37, 211, 102, 0.3); max-width: 650px; width: 95%; text-align: center; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(37, 211, 102, 0.15); overflow: hidden; z-index: 11000;">
+    -->
       <!-- Efecto de brillo de fondo -->
+    <!--
       <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: #25D366; filter: blur(100px); opacity: 0.2; pointer-events: none;"></div>
       
       <div class="update-header" style="justify-content: center; position: relative; background: transparent; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-top: 25px;">
@@ -1561,6 +1568,7 @@
         </div>
       </div>
     </div>
+    -->
 
     <!-- 🎨 MODAL PERSONALIZADOR DE TEMAS -->
     <div class="theme-modal-overlay" id="theme-modal-overlay" onclick="if(event.target===this) closeThemeModal()">
@@ -1718,6 +1726,7 @@
       };
 
       window.abrirModalWspBot = function(desdeBoton = false) {
+          return; // Desactivado temporalmente junto con el botón BOT WSP y ASISTENTE VIP
           const overlay = document.getElementById('wsp-bot-overlay');
           const modal = document.getElementById('wsp-bot-modal');
           if (overlay) {
@@ -1858,7 +1867,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1794675289911"></script>
+  <script src="app.min.js?v=1794697613835"></script>
 </body>
 
 </html>
