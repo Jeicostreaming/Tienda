@@ -191,7 +191,7 @@
       });
     }
   </script>
-</head>
+  </head>
 
 <body class="season-navidad dark-mode">
   <script>
@@ -692,7 +692,11 @@
           </li>
         </ul>
 
-        <li class="nav-item" onclick="nav('recarga', this)">
+        <li class="nav-item" onclick="nav('mired', this); if(typeof cargarMiRed==='function') cargarMiRed();" id="nav-item-mired">
+              <span class="material-icons-round">groups</span>
+              <span class="menu-text">Mi Red</span>
+            </li>
+            <li class="nav-item" onclick="nav('recarga', this)">
           <span class="material-icons-round">savings</span>
           <span class="menu-text">RECARGAR</span>
         </li>
@@ -777,12 +781,6 @@
         <div class="top-header-spacer"></div>
 
         <div class="top-header-controls">
-          <!-- Switch de Moneda COP / USD -->
-          <div class="currency-toggle-wrapper" style="display:flex; background:rgba(15,18,29,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:3px; gap:2px;">
-            <button type="button" class="curr-switch-btn active" data-curr="COP" onclick="cambiarMonedaGlobal('COP')" style="background:transparent; border:none; color:#cbd5e1; font-size:0.75rem; font-weight:800; padding:5px 10px; border-radius:16px; cursor:pointer; transition:all 0.2s;">🇨🇴 COP</button>
-            <button type="button" class="curr-switch-btn" data-curr="USD" onclick="cambiarMonedaGlobal('USD')" style="background:transparent; border:none; color:#cbd5e1; font-size:0.75rem; font-weight:800; padding:5px 10px; border-radius:16px; cursor:pointer; transition:all 0.2s;">🇺🇸 USD</button>
-          </div>
-
           <!-- Toggle Halloween / Temporada -->
           <button class="btn-halloween-pill active" id="btn-toggle-halloween" onclick="toggleHalloweenMode()" title="Activar/Desactivar temática Navideña">
             <span>🎄</span> <span id="halloween-text">Navidad: ON</span>
@@ -1179,7 +1177,286 @@
         </div>
       </div>
 
-    </main>
+          <!-- ========================================================= -->
+      <!-- SECCIÓN: MI RED MULTINIVEL & REVENDEDORES (MINI-ADMINS)   -->
+      <!-- ========================================================= -->
+      <div id="sec-mired" class="hidden">
+        <div class="red-dashboard-container">
+          
+          <!-- Encabezado con Botón de Acción Principal -->
+          <div class="red-header-bar">
+            <div class="red-title-group">
+              <h2><span class="material-icons-round" style="color:var(--red-neon-cyan); font-size:2rem;">groups</span> MI RED & REVENDEDORES</h2>
+              <p>Gestiona tu equipo de clientes, transfiere saldos de tu cuenta, configura tus precios de reventa y audita tus ganancias.</p>
+            </div>
+            <div class="red-header-actions">
+              <button type="button" class="btn-guia-red-hero" id="btn-abrir-guia-red" onclick="abrirModalGuiaRed()">
+                <span class="material-icons-round">help_outline</span> ¿Cómo funciona?
+              </button>
+              <button type="button" class="btn-wsp-red-hero" id="btn-config-wsp-red" onclick="abrirModalConfigWhatsappRed()">
+                <span class="material-icons-round">perm_phone_msg</span> Mi WhatsApp
+              </button>
+              <button type="button" class="btn-crear-red-hero" id="btn-abrir-crear-subusuario" onclick="abrirModalCrearSubUsuario()">
+                <span class="material-icons-round">person_add</span> CREAR SUB-USUARIO
+              </button>
+            </div>
+          </div>
+
+          <!-- Métricas Bento -->
+          <div class="red-metrics-grid">
+            <div class="red-metric-card">
+              <div class="red-metric-icon icon-purple">
+                <span class="material-icons-round">people</span>
+              </div>
+              <div class="red-metric-info">
+                <span class="red-metric-label">Mi Equipo</span>
+                <span class="red-metric-val" id="red-metric-total-hijos">0</span>
+              </div>
+            </div>
+
+            <div class="red-metric-card">
+              <div class="red-metric-icon icon-cyan">
+                <span class="material-icons-round">account_balance_wallet</span>
+              </div>
+              <div class="red-metric-info">
+                <span class="red-metric-label">Saldo en Circulación</span>
+                <span class="red-metric-val" id="red-metric-saldo-red">$ 0</span>
+              </div>
+            </div>
+
+            <div class="red-metric-card">
+              <div class="red-metric-icon icon-green">
+                <span class="material-icons-round">payments</span>
+              </div>
+              <div class="red-metric-info">
+                <span class="red-metric-label">Comisiones Ganadas</span>
+                <span class="red-metric-val" id="red-metric-ganancias" style="color:var(--red-neon-emerald);">$ 0</span>
+              </div>
+            </div>
+
+            <div class="red-metric-card">
+              <div class="red-metric-icon icon-amber">
+                <span class="material-icons-round">military_tech</span>
+              </div>
+              <div class="red-metric-info">
+                <span class="red-metric-label">Nivel de Red</span>
+                <span class="red-metric-val" id="red-metric-nivel" style="color:var(--red-neon-amber);">Nivel 0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pestañas de Gestión -->
+          <div class="red-tabs-nav">
+            <button type="button" class="red-tab-btn active" id="tab-btn-subusuarios" onclick="cambiarTabRed('subusuarios')">
+              <span class="material-icons-round">person_search</span> Mis Clientes & Hijos
+            </button>
+            <button type="button" class="red-tab-btn" id="tab-btn-precios" onclick="cambiarTabRed('precios')">
+              <span class="material-icons-round">sell</span> Precios de Reventa
+            </button>
+            <button type="button" class="red-tab-btn" id="tab-btn-comisiones" onclick="cambiarTabRed('comisiones')">
+              <span class="material-icons-round">receipt_long</span> Historial de Comisiones
+            </button>
+          </div>
+
+          <!-- TAB 1: SUB-USUARIOS -->
+          <div class="red-tab-content red-table-card" id="tab-content-subusuarios">
+            <div class="red-table-toolbar">
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:800; color:var(--red-text-primary); margin:0;">
+                  Equipo y Clientes de tu Red
+                </h3>
+                <div class="red-filter-pills-bar">
+                  <button type="button" class="red-filter-pill-btn active" id="btn-filtro-todos" onclick="filtrarPorNivelRed('todos')">
+                    <span class="material-icons-round" style="font-size:16px;">groups</span> Toda mi Red <span class="pill-count" id="cnt-filtro-todos">0</span>
+                  </button>
+                  <button type="button" class="red-filter-pill-btn" id="btn-filtro-directos" onclick="filtrarPorNivelRed('directos')">
+                    <span class="material-icons-round" style="font-size:16px;">person</span> Solo Directos <span class="pill-count" id="cnt-filtro-directos">0</span>
+                  </button>
+                  <button type="button" class="red-filter-pill-btn" id="btn-filtro-subred" onclick="filtrarPorNivelRed('subred')">
+                    <span class="material-icons-round" style="font-size:16px;">share</span> Clientes de Clientes <span class="pill-count" id="cnt-filtro-subred">0</span>
+                  </button>
+                </div>
+              </div>
+              <input type="text" class="red-search-input" placeholder="🔍 Buscar por usuario o nombre..." oninput="filtrarSubusuariosRed(this.value)">
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="red-table">
+                <thead>
+                  <tr>
+                    <th onclick="ordenarSubusuarios('usuario')" style="cursor:pointer;" title="Ordenar por usuario">
+                      Usuario & Datos <span id="sort-icon-usuario" class="material-icons-round sort-arrow">unfold_more</span>
+                    </th>
+                    <th onclick="ordenarSubusuarios('saldo')" style="cursor:pointer;" title="Ordenar por saldo">
+                      Saldo Disponible <span id="sort-icon-saldo" class="material-icons-round sort-arrow">unfold_more</span>
+                    </th>
+                    <th onclick="ordenarSubusuarios('compras')" style="cursor:pointer;" title="Ordenar por actividad">
+                      Actividad <span id="sort-icon-compras" class="material-icons-round sort-arrow">unfold_more</span>
+                    </th>
+                    <th onclick="ordenarSubusuarios('comisiones')" style="cursor:pointer;" title="Ordenar por comisiones">
+                      Tus Comisiones <span id="sort-icon-comisiones" class="material-icons-round sort-arrow">unfold_more</span>
+                    </th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-subusuarios-body">
+                  <!-- Se llena dinámicamente -->
+                </tbody>
+              </table>
+              <div id="subusuarios-empty-state" style="display:none; text-align:center; padding:40px 20px; color:var(--red-text-secondary);">
+                <span class="material-icons-round" style="font-size:48px; color:var(--red-text-faint);">group_off</span>
+                <p style="margin:10px 0 0; font-size:0.95rem;">Aún no tienes clientes registrados en tu red.</p>
+                <button type="button" class="btn-crear-red-hero" style="margin-top:14px; padding:8px 18px; font-size:0.85rem;" onclick="abrirModalCrearSubUsuario()">
+                  Crear tu Primer Cliente
+                </button>
+              </div>
+            </div>
+
+            <!-- PAGINACIÓN SUB-USUARIOS -->
+            <div class="red-pagination-bar" id="subusuarios-pagination-bar">
+              <div class="red-pag-limit">
+                <span>Mostrar:</span>
+                <select id="subusuarios-limit-select" onchange="cambiarLimitePaginacionSubusuarios(this.value)">
+                  <option value="10" selected>10 registros</option>
+                  <option value="25">25 registros</option>
+                  <option value="50">50 registros</option>
+                </select>
+              </div>
+              <div class="red-pag-controls">
+                <span id="subusuarios-pag-info" style="color:var(--red-text-secondary); font-size:0.85rem; font-weight:600;">Página 1 de 1</span>
+                <button type="button" class="btn-pag-nav" id="subusuarios-btn-prev" onclick="cambiarPaginaSubusuarios(-1)" disabled>
+                  <span class="material-icons-round">chevron_left</span> Anterior
+                </button>
+                <button type="button" class="btn-pag-nav" id="subusuarios-btn-next" onclick="cambiarPaginaSubusuarios(1)" disabled>
+                  Siguiente <span class="material-icons-round">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: PRECIOS DE REVENTA -->
+          <!-- TAB 2: PRECIOS DE REVENTA -->
+          <div class="red-tab-content red-table-card" id="tab-content-precios" style="display:none;">
+            <div class="red-table-toolbar">
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:800; color:var(--red-text-primary); margin:0;">
+                  Configuración de Precios de Reventa
+                </h3>
+                <p style="color:var(--red-text-secondary); font-size:0.85rem; margin:4px 0 0;">
+                  Define a qué precio compran tus referidos directos. Puedes fijar un margen masivo para todo el catálogo o ajustar servicio por servicio.
+                </p>
+              </div>
+            </div>
+
+            <!-- PANEL DE CONFIGURACIÓN MASIVA / LOTE -->
+            <div class="red-bulk-pricing-panel">
+              <div class="bulk-header">
+                <span class="material-icons-round" style="color:var(--red-neon-cyan); font-size:20px;">bolt</span>
+                <strong>Margen Global para Todo el Catálogo</strong>
+                <span style="font-size:0.75rem; color:var(--red-text-secondary);">(Aplica margen a todos los servicios en 1 solo clic)</span>
+              </div>
+              <div class="bulk-body">
+                <div class="bulk-type-selector">
+                  <label class="bulk-radio-label active" id="label-bulk-porcentaje" onclick="cambiarModoAjusteLote('porcentaje')">
+                    <input type="radio" name="bulk_pricing_type" value="porcentaje" checked>
+                    <span>Porcentaje (+%)</span>
+                  </label>
+                  <label class="bulk-radio-label" id="label-bulk-fijo" onclick="cambiarModoAjusteLote('fijo')">
+                    <input type="radio" name="bulk_pricing_type" value="fijo">
+                    <span>Monto Fijo (+$)</span>
+                  </label>
+                </div>
+                <div class="bulk-chips-row" id="bulk-chips-container">
+                  <button type="button" class="bulk-chip-btn" onclick="seleccionarChipLote(5)">+5%</button>
+                  <button type="button" class="bulk-chip-btn" onclick="seleccionarChipLote(10)">+10%</button>
+                  <button type="button" class="bulk-chip-btn" onclick="seleccionarChipLote(15)">+15%</button>
+                  <button type="button" class="bulk-chip-btn" onclick="seleccionarChipLote(20)">+20%</button>
+                  <button type="button" class="bulk-chip-btn" onclick="seleccionarChipLote(25)">+25%</button>
+                </div>
+                <div class="bulk-input-group">
+                  <input type="number" id="bulk-margin-input" placeholder="Valor (ej. 15)" min="1" step="1" value="15">
+                  <button type="button" class="btn-apply-bulk" onclick="aplicarAjustePreciosLote()">
+                    <span class="material-icons-round">bolt</span> Aplicar a Todos
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="red-table">
+                <thead>
+                  <tr>
+                    <th>Servicio</th>
+                    <th>Costo Base</th>
+                    <th>Precio para tu Red ($ COP)</th>
+                    <th>Margen de Ganancia</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-precios-red-body">
+                  <!-- Se llena dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: HISTORIAL DE COMISIONES -->
+          <div class="red-tab-content red-table-card" id="tab-content-comisiones" style="display:none;">
+            <div class="red-table-toolbar" style="gap:12px; flex-wrap:wrap;">
+              <div>
+                <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:800; color:var(--red-text-primary); margin:0;">
+                  Auditoría de Comisiones en Cascada
+                </h3>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap;">
+                <input type="text" class="red-search-input" id="comisiones-search-input" placeholder="🔍 Buscar comprador, orden o servicio..." oninput="filtrarComisionesRed(this.value)" style="min-width:220px;">
+                <div class="red-pag-limit">
+                  <span>Ver:</span>
+                  <select id="comisiones-limit-select" onchange="cambiarLimitePaginacionComisiones(this.value)">
+                    <option value="10" selected>10 registros</option>
+                    <option value="25">25 registros</option>
+                    <option value="50">50 registros</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table class="red-table">
+                <thead>
+                  <tr>
+                    <th>Fecha & Hora</th>
+                    <th>Orden</th>
+                    <th>Comprador</th>
+                    <th>Servicio</th>
+                    <th>Precio Cobrado</th>
+                    <th>Ganancia Neta</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-comisiones-red-body">
+                  <!-- Se llena dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PAGINACIÓN COMISIONES -->
+            <div class="red-pagination-bar" id="comisiones-pagination-bar">
+              <span id="comisiones-pag-info" style="color:var(--red-text-secondary); font-size:0.85rem; font-weight:600;">Página 1 de 1</span>
+              <div class="red-pag-controls">
+                <button type="button" class="btn-pag-nav" id="comisiones-btn-prev" onclick="cambiarPaginaComisiones(-1)" disabled>
+                  <span class="material-icons-round">chevron_left</span> Anterior
+                </button>
+                <button type="button" class="btn-pag-nav" id="comisiones-btn-next" onclick="cambiarPaginaComisiones(1)" disabled>
+                  Siguiente <span class="material-icons-round">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+</main>
 
     <button class="floating-cart-btn hidden" id="main-cart-btn" onclick="toggleCart()">
       <span class="material-icons-round" style="font-size: 32px;">shopping_cart</span>
@@ -1473,57 +1750,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- 💱 SISTEMA BIMONEDA (COP / USD): display de saldo según la moneda activa -->
-  <style>
-    .currency-toggle-wrapper .curr-switch-btn.active { background: var(--accent) !important; color: #fff !important; box-shadow: 0 2px 8px var(--accent-glow); }
-    .currency-toggle-wrapper .curr-switch-btn { min-height: 32px; }
-  </style>
-  <script>
-    window.actualizarDisplaySaldoGlobal = function () {
-      var sCOP = (window.userBalance !== undefined && window.userBalance !== null && !isNaN(window.userBalance) && Number(window.userBalance) > 0)
-        ? Number(window.userBalance)
-        : (Number(localStorage.getItem('dw_saldo')) || (typeof userBalance !== 'undefined' ? Number(userBalance) : 0));
-
-      var sUSD = (window.userBalanceUSD !== undefined && window.userBalanceUSD !== null && !isNaN(window.userBalanceUSD) && Number(window.userBalanceUSD) > 0)
-        ? Number(window.userBalanceUSD)
-        : (Number(localStorage.getItem('dw_saldo_usd')) || 0);
-
-      window.userBalance = sCOP;
-      window.userBalanceUSD = sUSD;
-
-      var texto = window.monedaActiva === 'USD'
-        ? '$ ' + (Number(sUSD) || 0).toFixed(2) + ' USD'
-        : '$ ' + new Intl.NumberFormat('es-CO').format(sCOP || 0);
-
-      var dBalance = document.getElementById('display-balance');
-      var iBalance = document.getElementById('inicio-user-balance-display');
-      var wBalance = document.getElementById('wallet-balance-big');
-      if (dBalance) dBalance.innerText = texto;
-      if (wBalance) wBalance.innerText = texto;
-      if (iBalance) {
-        if (window.isBalanceHiddenInicio) {
-          iBalance.setAttribute('data-real-balance', texto);
-          iBalance.innerText = '••••••••';
-        } else {
-          iBalance.innerText = texto;
-        }
-      }
-      if (typeof window.renderizarTarjetasSaldoBilletera === 'function') window.renderizarTarjetasSaldoBilletera();
-    };
-    // Cada refresco de saldo existente (llave.js) termina respetando la moneda activa
-    (function () {
-      var original = window.updateBalanceUI;
-      window.updateBalanceUI = function () {
-        if (typeof original === 'function') original.apply(this, arguments);
-        window.actualizarDisplaySaldoGlobal();
-      };
-      document.querySelectorAll('.curr-switch-btn').forEach(function (btn) {
-        btn.classList.toggle('active', btn.dataset.curr === window.monedaActiva);
-      });
-      window.actualizarDisplaySaldoGlobal();
-    })();
-  </script>
-
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
       // Inicializar partículas en el login si existe el contenedor
@@ -1632,7 +1858,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1793940275154"></script>
+  <script src="app.min.js?v=1794675289911"></script>
 </body>
 
 </html>
