@@ -1516,9 +1516,15 @@
           <span class="material-icons-round">system_update_alt</span>
           <h2>HISTORIAL DE VERSIONES</h2>
         </div>
-        <button class="btn-close-update" onclick="cerrarModalUpdates()">
-          <span class="material-icons-round">close</span>
-        </button>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button type="button" class="btn-check-updates" onclick="if(window.verificarActualizacionSistema) window.verificarActualizacionSistema(true);" title="Buscar actualizaciones ahora" style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; transition: all 0.2s;">
+            <span class="material-icons-round" style="font-size: 1.05rem;">sync</span>
+            <span>Buscar cambios</span>
+          </button>
+          <button class="btn-close-update" onclick="cerrarModalUpdates()">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
       </div>
       <div class="update-body" id="update-timeline">
       </div>
@@ -1869,7 +1875,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1795578987129"></script>
+  <script src="app.min.js?v=1795665492067"></script>
 </body>
 
 </html>

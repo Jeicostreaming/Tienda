@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jeico-cache-v10';
+const CACHE_NAME = 'jeico-cache-1795665492067';
 const urlsToCache = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -19,14 +20,26 @@ self.addEventListener('install', event => {
 
 // ESTRATEGIA: "Network First" con Actualización de Caché y Bypass de HTTP Cache
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  try {
+    const reqUrl = new URL(event.request.url);
+    if (reqUrl.origin !== self.location.origin) return;
+    if (reqUrl.pathname.endsWith('/version.json') || reqUrl.pathname.endsWith('version.json') || reqUrl.pathname.endsWith('.php')) {
+      return;
+    }
+  } catch (e) {
+    return;
+  }
+
   event.respondWith(
     fetch(event.request, { cache: 'no-store' })
       .then(response => {
-        // Clonamos la respuesta fresca para guardarla en el caché
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseClone);
-        });
+        if (response && response.ok && response.type === 'basic') {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
         return response;
       })
       .catch(() => {
@@ -47,6 +60,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
