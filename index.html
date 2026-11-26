@@ -640,135 +640,138 @@
         </div>
       </div>
 
-      <div id="btn-toggle-desktop-wrapper" style="padding: 4px 10px 8px; border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.08)); margin-bottom: 8px;">
+      <div id="btn-toggle-desktop-wrapper" class="sb-collapse-wrap">
         <button type="button" class="nav-item btn-collapse-desktop" id="btn-toggle-desktop"
           onclick="toggleSidebar()"
-          title="Contraer / Expandir menú"
-          style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle, rgba(255,255,255,0.08)); width: 100%; cursor: pointer; border-radius: 12px; height: 38px; display: flex; align-items: center; gap: 10px; padding: 0 12px; transition: all 0.25s ease;">
-          <span class="material-icons-round" id="collapse-icon" style="font-size: 1.25rem; color: var(--accent);">menu_open</span>
-          <span class="menu-text" style="font-size: 0.74rem; font-weight: 800; letter-spacing: 0.8px; color: var(--text-white);">CONTRAER</span>
+          title="Contraer / Expandir menú">
+          <span class="sb-icon-pill"><span class="material-icons-round" id="collapse-icon">menu_open</span></span>
+          <span class="menu-text">Ocultar menú</span>
         </button>
       </div>
 
       <ul class="nav-links">
+        <li class="nav-section-label"><span>Explorar</span></li>
 
-        <li class="nav-item active" onclick="nav('inicio', this)">
+        <li class="nav-item active" onclick="nav('inicio', this)" title="Inicio">
           <span class="material-icons-round">home</span>
-          <span class="menu-text">INICIO</span>
+          <span class="menu-text">Inicio</span>
         </li>
 
-        <li class="nav-item" onclick="nav('recomendaciones', this)">
+        <li class="nav-item" onclick="nav('recomendaciones', this)" title="Recomendados">
           <span class="material-icons-round">star</span>
-          <span class="menu-text">RECOMENDADOS</span>
+          <span class="menu-text">Recomendados</span>
         </li>
 
-        <li class="nav-item" onclick="nav('tienda', this)">
+        <li class="nav-item" onclick="nav('tienda', this)" title="Tienda">
           <span class="material-icons-round">storefront</span>
-          <span class="menu-text">TIENDA</span>
+          <span class="menu-text">Tienda</span>
         </li>
 
-        <li class="nav-item has-submenu" onclick="toggleSubmenu(this)">
-          <div style="display:flex; align-items:center; gap:12px; width:100%;">
+        <li class="nav-section-label"><span>Cuenta &amp; Red</span></li>
+
+        <li class="nav-item has-submenu" onclick="toggleSubmenu(this)" title="Mi Cuenta">
+          <div class="sb-submenu-trigger">
             <span class="material-icons-round">person</span>
-            <span class="menu-text">MI CUENTA</span>
-            <span class="material-icons-round arrow-icon menu-text"
-              style="margin-left:auto; font-size:1.2rem;">expand_more</span>
+            <span class="menu-text">Mi Cuenta</span>
+            <span class="material-icons-round arrow-icon menu-text">expand_more</span>
           </div>
         </li>
         <ul class="submenu hidden" id="submenu-cuenta">
-          <li class="submenu-item" onclick="nav('cuentas', this)">
+          <li class="submenu-item" onclick="nav('cuentas', this)" title="Mis Cuentas">
             <span class="material-icons-round">vpn_key</span>
             <span class="menu-text">Mis Cuentas</span>
           </li>
-          <li class="submenu-item" onclick="nav('pedidos', this)">
+          <li class="submenu-item" onclick="nav('pedidos', this)" title="Mis Pedidos">
             <span class="material-icons-round">receipt_long</span>
             <span class="menu-text">Mis Pedidos</span>
           </li>
-          <li class="submenu-item" onclick="nav('billetera', this)">
+          <li class="submenu-item" onclick="nav('billetera', this)" title="Mi Billetera">
             <span class="material-icons-round">account_balance_wallet</span>
             <span class="menu-text">Mi Billetera</span>
           </li>
-          <li class="submenu-item" onclick="nav('tokens', this)">
+          <li class="submenu-item" onclick="nav('tokens', this)" title="Mis Tokens">
             <span class="material-icons-round">toll</span>
-            <span class="menu-text">Mis Tokens <span id="nav-token-badge" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-size:.6rem; font-weight:900; padding:2px 7px; border-radius:20px; margin-left:4px; display:none;">0</span></span>
+            <span class="menu-text">Mis Tokens <span id="nav-token-badge" class="sb-token-badge" style="display:none;">0</span></span>
           </li>
-          <li class="submenu-item" onclick="nav('datos', this)">
+          <li class="submenu-item" onclick="nav('datos', this)" title="Mis Datos">
             <span class="material-icons-round">manage_accounts</span>
             <span class="menu-text">Mis Datos</span>
           </li>
         </ul>
 
-        <li class="nav-item" onclick="nav('mired', this); if(typeof cargarMiRed==='function') cargarMiRed();" id="nav-item-mired">
-              <span class="material-icons-round">groups</span>
-              <span class="menu-text">Mi Red</span>
-            </li>
-            <li class="nav-item" onclick="nav('recarga', this)">
-          <span class="material-icons-round">savings</span>
-          <span class="menu-text">RECARGAR</span>
+        <li class="nav-item" onclick="nav('mired', this); if(typeof cargarMiRed==='function') cargarMiRed();" id="nav-item-mired" title="Mi Red">
+          <span class="material-icons-round">groups</span>
+          <span class="menu-text">Mi Red</span>
         </li>
 
-        <li class="nav-item has-submenu" onclick="toggleSubmenu(this)">
-          <div style="display:flex; align-items:center; gap:12px; width:100%;">
+        <li class="nav-item" onclick="nav('recarga', this)" title="Recargar Saldo">
+          <span class="material-icons-round">savings</span>
+          <span class="menu-text">Recargar</span>
+        </li>
+
+        <li class="nav-section-label"><span>Soporte &amp; Más</span></li>
+
+        <li class="nav-item has-submenu" onclick="toggleSubmenu(this)" title="Soporte">
+          <div class="sb-submenu-trigger">
             <span class="material-icons-round">support_agent</span>
-            <span class="menu-text">SOPORTE</span>
-            <span class="material-icons-round arrow-icon menu-text"
-              style="margin-left:auto; font-size:1.2rem;">expand_more</span>
+            <span class="menu-text">Soporte</span>
+            <span class="material-icons-round arrow-icon menu-text">expand_more</span>
           </div>
         </li>
         <ul class="submenu hidden" id="submenu-soporte">
-          <li class="submenu-item" onclick="nav('soporte', this)">
+          <li class="submenu-item" onclick="nav('soporte', this)" title="Crear Ticket">
             <span class="material-icons-round">bug_report</span>
             <span class="menu-text">Crear Ticket</span>
           </li>
-          <li class="submenu-item" onclick="nav('mistickets', this)">
+          <li class="submenu-item" onclick="nav('mistickets', this)" title="Mis Tickets">
             <span class="material-icons-round">history_edu</span>
             <span class="menu-text">Mis Tickets</span>
           </li>
         </ul>
 
-        <li class="nav-item" onclick="nav('codigos', this)">
+        <li class="nav-item" onclick="nav('codigos', this)" title="Códigos">
           <span class="material-icons-round">vpn_key</span>
-          <span class="menu-text">CÓDIGOS</span>
+          <span class="menu-text">Códigos</span>
         </li>
-        <li class="nav-item" onclick="nav('ranking', this)">
+        <li class="nav-item" onclick="nav('ranking', this)" title="Ranking">
           <span class="material-icons-round">emoji_events</span>
-          <span class="menu-text">RANKING</span>
+          <span class="menu-text">Ranking</span>
         </li>
 
-        <li class="nav-item" onclick="openThemeModal()" style="color:var(--accent-text);">
+        <li class="nav-item sb-theme-link" onclick="openThemeModal()" title="Personalizar Tema">
           <span class="material-icons-round">palette</span>
-          <span class="menu-text">PERSONALIZAR TEMA</span>
+          <span class="menu-text">Personalizar Tema</span>
         </li>
 
-        <li class="nav-item logout-link" onclick="logout()" style="margin-top: 0;">
+        <li class="nav-item logout-link" onclick="logout()" title="Cerrar Sesión">
           <span class="material-icons-round">logout</span>
-          <span class="menu-text">SALIR</span>
+          <span class="menu-text">Salir</span>
         </li>
       </ul>
 
       <div class="user-sidebar-info">
-        <div class="user-data-text menu-text" style="display:flex; flex-direction:column; gap:8px; min-width:0; width:100%;">
+        <div class="user-data-text menu-text sb-user-stack">
 
           <!-- Fila: Avatar + Nombre -->
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div class="sb-user-row">
             <div class="user-avatar-circle" style="flex-shrink:0;">
               <span class="material-icons-round">account_circle</span>
             </div>
-            <span class="user-name" id="display-user" style="font-size:.9rem; font-weight:900; letter-spacing:.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">...</span>
+            <span class="user-name" id="display-user">...</span>
           </div>
 
           <!-- Saldo dinero -->
-          <div style="display:flex; align-items:center; gap:8px; background:rgba(124,58,237,.12); border:1px solid rgba(124,58,237,.3); border-radius:8px; padding:7px 12px;">
-            <span class="material-icons-round" style="font-size:1rem; color:var(--accent,#7c3aed); flex-shrink:0;">account_balance_wallet</span>
-            <div class="user-balance" id="display-balance" style="font-size:.95rem; font-weight:900; margin:0;">$ 0</div>
+          <div class="sb-wallet-pill">
+            <span class="material-icons-round sb-wallet-icon">account_balance_wallet</span>
+            <div class="user-balance" id="display-balance">$ 0</div>
           </div>
 
           <!-- Tokens -->
-          <div id="display-token-balance" style="display:none; align-items:center; gap:8px; background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(217,119,6,.08)); border:1px solid rgba(245,158,11,.35); border-radius:8px; padding:7px 12px; box-shadow:0 0 8px rgba(245,158,11,.12);">
+          <div id="display-token-balance" class="sb-tokens-pill" style="display:none;">
             <span style="font-size:1.1rem; line-height:1; flex-shrink:0;">🪙</span>
             <div style="display:flex; align-items:baseline; gap:4px;">
-              <span id="display-token-amount" style="font-size:.95rem; font-weight:900; color:#f59e0b;">0</span>
-              <span style="font-size:.68rem; font-weight:800; color:rgba(245,158,11,.65);">TK</span>
+              <span id="display-token-amount" class="sb-tokens-amt">0</span>
+              <span class="sb-tokens-unit">TK</span>
             </div>
           </div>
 
@@ -780,8 +783,12 @@
 
       <!-- 🕹️ BARRA DE ACCIÓN SUPERIOR (HALLOWEEN + MODO CLARO/OSCURO) -->
       <header class="app-top-header">
-        <button class="mobile-hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Abrir Menú" title="Menú">
-          <span class="material-icons-round">menu</span>
+        <button class="mobile-hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Abrir o cerrar menú" title="Menú">
+          <span class="hb-lines" aria-hidden="true">
+            <span class="hb-line"></span>
+            <span class="hb-line"></span>
+            <span class="hb-line"></span>
+          </span>
         </button>
 
         <div class="top-header-spacer"></div>
@@ -1877,7 +1884,7 @@
       }
   </script>
 
-  <script src="app.min.js?v=1795728057062"></script>
+  <script src="app.min.js?v=1795730392486"></script>
 </body>
 
 </html>
