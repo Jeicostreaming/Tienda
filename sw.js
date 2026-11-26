@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jeico-cache-1795665492067';
+const CACHE_NAME = 'jeico-cache-1795665788706';
 const urlsToCache = [
   './',
   './index.html',
